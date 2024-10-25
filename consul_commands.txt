@@ -1,0 +1,49 @@
+
+1)vagrant@n1:
+
+#consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=agent-one -bind=172.20.20.10 -enable-script-checks=true -config-dir=/etc/consul.d
+#consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=servidorUbuntu -bind=192.168.100.3 -enable-script-checks=true -config-dir=/etc/consul.d
+
+--ip contenedores--
+consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=servidorUbuntu -bind=10.149.108.62 -enable-script-checks=true -config-dir=/etc/consul.d
+
+
+2)vagrant@n2:
+
+#consul agent -data-dir=/tmp/consul -node=agent-two -bind=172.20.20.11 -enable-script-checks=true -config-dir=/etc/consul.d
+#consul agent -data-dir=/tmp/consul -node=agent-two -bind=192.168.100.2 -enable-script-checks=true -config-dir=/etc/consul.d
+consul agent -data-dir=/tmp/consul -node=clienteUbuntu -bind=192.168.100.2 -enable-script-checks=true -config-dir=/etc/consul.d
+
+
+consul agent -ui -bind=192.168.100.2 -client=0.0.0.0 -data-dir=.
+
+--ip contenedores--
+consul agent -ui -bind=10.160.201.164 -client=0.0.0.0 -data-dir=.
+
+
+vagrant@n3:
+consul agent -data-dir=/tmp/consul -node=clienteUbuntu2 -bind=192.168.100.4 -enable-script-checks=true -config-dir=/etc/consul.d
+
+--ip contenedores--
+consul agent -data-dir=/tmp/consul -node=clienteUbuntu2 -bind=10.50.219.156 -enable-script-checks=true -config-dir=/etc/consul.d
+
+
+3)Chequeamos miembros dentro de Consul
+(otra terminal)
+vagrant@n1:
+
+consul members
+
+4)Ahora se le dice al agent-one que se una al agent-two
+vagrant@n1:
+
+consul join 192.168.100.2
+
+5)Chequeamos nuevamente los miembros dentro de Consul
+vagrant@n1:
+
+consul members
+
+6)
+vagrant@n1:
+dig @127.0.0.1 -p 8600 agent-two.node.consul
